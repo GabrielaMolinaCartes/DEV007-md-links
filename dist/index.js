@@ -3,7 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.mdLinks = void 0;
+const _mdLinks = void 0;
+export { _mdLinks as mdLinks };
 const _fs = _interopRequireDefault(require("fs"));
 
 function _interopRequireDefault(obj) { 
@@ -20,4 +21,5 @@ const mdLinks = function mdLinks(path, options) {
     }
   });
 };
-exports.mdLinks = mdLinks;
+const _mdLinks = mdLinks;
+export { _mdLinks as mdLinks };

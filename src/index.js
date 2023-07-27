@@ -8,12 +8,10 @@ import {
   isMdFile, 
   readMdFile, 
   getMdFilesRecursion 
-} from './functions';
+// eslint-disable-next-line import/extensions
+} from './functions.js';
 
-const routeUser = process.argv[2];
-const pathExists = (route) => fs.existsSync(route); 
-
-const mdLinks = (pathUser) => new Promise((resolve, reject) => {
+export const mdLinks = (pathUser) => new Promise((resolve, reject) => {
   if (!routeExist(pathUser)) {
     // Rechazamos la promesa si la ruta no existe
     reject(new Error('Error, enter a valid path'));
@@ -47,7 +45,7 @@ const mdLinks = (pathUser) => new Promise((resolve, reject) => {
     }));
     // Resolvemos la promesa con un mensaje si el archivo .md no contine links
     if (links.length === 0) {
-      resolve(chalk.pink.bold('Empty .md file, links not found'));
+      resolve(chalk.magenta('Empty .md file, links not found'));
     } else {
       // Resolvemos la promesa si el archivo .md contiene links
       resolve(links);
