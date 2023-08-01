@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
 
 // Existe la ruta
 export const routeExist = (route) => fs.existsSync(route);
@@ -19,8 +20,9 @@ export const readMdFile = (route) => {
   const links = equals.map((equal) => ({
     text: equal[1],
     url: equal[2],
+    file: path.resolve(route),
   }));
-  // console.log(readMdFile);
+  // Array de objetos
   return links;
 };
 
@@ -46,4 +48,39 @@ export const getMdFilesRecursion = (dir) => {
   });
   // Retornar el array con todos los archivos .md encontrados en el directorio
   return mdFiles;
+};
+
+// Función para validar un enlace
+export const validateFn = (link) => new Promise((resolve) => {
+  const validLink = { ...link };
+  axios.get(link.href)
+    .then((response) => {
+      validLink.status = response.status;
+      validLink.statusText = response.statusText;
+      resolve(validLink);
+    })
+    .catch(() => {
+      validLink.status = 404;
+      validLink.statusText = 'Not Found';
+      resolve(validLink);
+    });
+});
+
+// Función para calcular las stats de un conjunto de enlaces
+export const statsFn = (links) => {
+  // New set, para almacenar enlaces únicos usando la propiedad href de cada enlace
+  const uniqueSet = new Set(links.map((link) => link.href));
+  // Obtiene enlaces únicos contando el tamaño del conjunto
+  const uniqueLinks = uniqueSet.size;
+  // Obtiene total de enlaces en el array de enlaces
+  const totalLinks = links.length;
+  // Filtra los enlaces para obtener solo los que tienen código
+  const brokenLinks = links.filter((link) => link.status >= 400).length;
+  return {
+    totalLinks,
+    uniqueLinks,
+    brokenLinks,
+    // Array de enlaces únicos obtenidos del conjunto
+    uniqueLinksArray: Array.from(uniqueSet),
+  };
 };

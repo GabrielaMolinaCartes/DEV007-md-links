@@ -12,22 +12,6 @@ import {
 // eslint-disable-next-line import/extensions
 } from './functions.js';
 
-// Función para validar un enlace
-const validateFn = (link) => new Promise((resolve) => {
-  const validLink = { ...link };
-  axios.get(link.href)
-    .then((response) => {
-      validLink.status = response.status;
-      validLink.statusText = response.statusText;
-      resolve(validLink);
-    })
-    .catch(() => {
-      validLink.status = 404;
-      validLink.statusText = 'Not Found';
-      resolve(validLink);
-    });
-});
-
 export const mdLinks = (pathUser, { validate = false } = {}) => new Promise((resolve, reject) => {
   if (!routeExist(pathUser)) {
     // Rechazamos la promesa si la ruta no existe
