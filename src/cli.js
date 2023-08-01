@@ -6,7 +6,7 @@ import mdLinks from './index.js';
 const path = process.argv[2];
 const options = process.argv.slice(3);
 // Muestra la ruta recibida
-console.log(chalk.magenta('Route received:', path));
+console.log(chalk.bgYellow('Route received:', path));
 
 const validated = options.includes('--validate') || options.includes('--v');
 const stated = options.includes('--stats') || options.includes('--s');
@@ -50,7 +50,7 @@ mdLinks(path, { validate: validated, stats: stated })
                 console.log(chalk.bgBlue.italic(`Total links: ${totalLinks}`));
                 console.log(chalk.bgBlue.italic(`Unique links: ${uniqueLinks}`));
             } else {
-            console.log(chalk.chalk.bgYellow('Link(s) found:\n'));
+            console.log(chalk.bgYellow('Link(s) found:\n'));
             // Muestra los objetos de enlace en la terminal
             console.log(res);
             }

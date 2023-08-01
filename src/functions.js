@@ -19,7 +19,7 @@ export const readMdFile = (route) => {
   const equals = Array.from(includesFn.matchAll(regexLink));
   const links = equals.map((equal) => ({
     text: equal[1],
-    url: equal[2],
+    href: equal[2],
     file: path.resolve(route),
   }));
   // Array de objetos
