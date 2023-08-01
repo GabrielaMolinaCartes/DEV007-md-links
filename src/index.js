@@ -1,17 +1,34 @@
 import path from 'path';
 import chalk from 'chalk';
+import axios from 'axios';
 import { 
   routeExist, 
   absoluteRoute, 
   isAFile, 
-  isDirectory, 
+  isADirectory, 
   isMdFile, 
   readMdFile, 
   getMdFilesRecursion 
 // eslint-disable-next-line import/extensions
 } from './functions.js';
 
-export const mdLinks = (pathUser) => new Promise((resolve, reject) => {
+// Función para validar un enlace
+const validateFn = (link) => new Promise((resolve) => {
+  const validLink = { ...link };
+  axios.get(link.href)
+    .then((response) => {
+      validLink.status = response.status;
+      validLink.statusText = response.statusText;
+      resolve(validLink);
+    })
+    .catch(() => {
+      validLink.status = 404;
+      validLink.statusText = 'Not Found';
+      resolve(validLink);
+    });
+});
+
+export const mdLinks = (pathUser, { validate = false } = {}) => new Promise((resolve, reject) => {
   if (!routeExist(pathUser)) {
     // Rechazamos la promesa si la ruta no existe
     reject(new Error('Error, enter a valid path'));
@@ -20,11 +37,11 @@ export const mdLinks = (pathUser) => new Promise((resolve, reject) => {
     // Resolvemos la promesa si la ruta no es absoluta usando path.resolve
     resolve(`Absolute path: ${path.resolve(pathUser)}`);
   }
-  if (isDirectory(pathUser)) {
+  if (isADirectory(pathUser)) {
     // Obtenemos los archivos .md de todos los directorios
     const mdFiles = getMdFilesRecursion(pathUser);
     // Mapeamos los archivos .md obtenidos en un array, llamando a mdLinks para cada uno de ellos
-    const mapFiles = mdFiles.map((file) => mdLinks(file));
+    const mapFiles = mdFiles.map((file) => mdLinks(file, { validate }));
     // Resolvemos todas las promesas
     Promise.all(mapFiles)
     // Concatenamos todo en un array de links
@@ -46,7 +63,11 @@ export const mdLinks = (pathUser) => new Promise((resolve, reject) => {
     // Resolvemos la promesa con un mensaje si el archivo .md no contine links
     if (links.length === 0) {
       resolve(chalk.magenta('Empty .md file, links not found'));
-    } else {
+    } else if (validate) {
+      const linkFn = links.map((link) => validateFn(link).then((validLink) => ({
+        ...validLink,
+        file: link.file,
+      })));
       // Resolvemos la promesa si el archivo .md contiene links
       resolve(links);
     } 

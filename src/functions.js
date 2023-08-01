@@ -8,20 +8,18 @@ export const absoluteRoute = (route) => path.isAbsolute(route);
 // Es un archivo
 export const isAFile = (route) => fs.statSync(route);
 // Es un directorio
-export const isDirectory = (route) => fs.statSync(route).isDirectory();
+export const isADirectory = (route) => fs.statSync(route).isDirectory();
 // Si es un archivo .md
 export const isMdFile = (route) => path.extname(route);
 // Lee el contenido de un archivo .md y extrae los links
 export const readMdFile = (route) => {
-  const includes = fs.readFileSync(route, 'utf8');
+  const includesFn = fs.readFileSync(route, 'utf8');
   const regexLink = /\[([^\]]+)\]\((.*)\)/gm;
-  const equals = Array.from(includes.matchAll(regexLink));
-  const links = [];
-
-  equals.forEach((equal) => {
-    const [url, text] = equal;
-    links.push({ url: url || equal[4], text: text || equal[3] });
-  });
+  const equals = Array.from(includesFn.matchAll(regexLink));
+  const links = equals.map((equal) => ({
+    text: equal[1],
+    url: equal[2],
+  }));
   // console.log(readMdFile);
   return links;
 };
