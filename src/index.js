@@ -18,25 +18,18 @@ const processFn = (links, { validate, stats }) => {
   if (validate) {
     // Valida cada enlace 
     return Promise.all(links.map((link) => validateFn(link)))
-      .then((validateLinks) => {
-        // Si también se elige la opción stats(true)
+      .then((validatedFns) => {
         if (stats) {
-          // Calcula stats de los enlaces validados
-          const calculateStats = statsFn(validateLinks);
-          // Añade al resultado el número de enlaces únicos
-          calculateStats.uniqueLinks = calculateStats.uniqueLinksArray.length;
-          return calculateStats;
+          const statsResult = statsFn(validatedFns);
+          return statsResult;
         }
-        // Si solo se solicito validate devuelve los enlaces validados
-        return validateLinks;
+        return validatedFns;
       });
   }
   // Si elige stats(true)
   if (stats) {
     // Calcula stats de los enlaces
     const calculateStats = statsFn(links);
-    // Añade al resultado el número de enlaces únicos
-    calculateStats.uniqueLinks = calculateStats.uniqueLinksArray.length;
     // Resuelve la promesa con el resultado de las stats
     return Promise.resolve(calculateStats);
   }
@@ -45,7 +38,8 @@ const processFn = (links, { validate, stats }) => {
 };
 
 // Función principal mdLinks
-export const mdLinks = (pathUser, { validate = false, stats = false } = {}) => new Promise((resolve, reject) => {
+const mdLinks = (pathUser, options = {}) => new Promise((resolve, reject) => {
+  const { validate = false, stats = false } = options;
   // Verifica si la ruta existe
   if (!routeExist(pathUser)) {
     // Rechazamos la promesa si la ruta no existe
@@ -60,7 +54,7 @@ export const mdLinks = (pathUser, { validate = false, stats = false } = {}) => n
   if (isADirectory(pathUser)) {
     // Obtenemos los archivos .md de todos los directorios
     const mdFiles = getMdFilesRecursion(pathUser);
-    // Mapeamos los archivos .md obtenidos en un array, llamando a mdLinks para cada uno de ellos
+    // Mapeamos los archivos .md obtenidos en un array
     const mapFiles = mdFiles.map((file) => mdLinks(file, { validate }));
     // Resolvemos todas las promesas
     Promise.all(mapFiles)
@@ -70,14 +64,14 @@ export const mdLinks = (pathUser, { validate = false, stats = false } = {}) => n
       .then(resolve)
       .catch(reject);
   } else if (isAFile(pathUser).isFile() && isMdFile(pathUser) === '.md') {
-    // Si la ruta es un archivo y tiene extensión .md, lee los enlaces del archivo .md
+    // Si la ruta es un archivo y tiene extensión .md, lee los enlaces 
     const links = readMdFile(pathUser);
-    // Procesa los enlaces y devuelve una promesa con el resultado (puede ser validate o stats)
+    // Procesa los enlaces y devuelve una promesa con el resultado
     processFn(links, { validate, stats })
       .then(resolve)
       .catch(reject);
   } else {
-    // Si la ruta es un archivo pero no tiene extensión .md, se rechaza promesa con un error
+    // Si la ruta no tiene extensión .md, se rechaza promesa con un error
     reject(new Error('Not .md file'));
   }
 });

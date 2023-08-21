@@ -80,7 +80,5 @@ export const statsFn = (links) => {
     totalLinks,
     uniqueLinks,
     brokenLinks,
-    // Array de enlaces únicos obtenidos del conjunto
-    uniqueLinksArray: Array.from(uniqueSet),
   };
 };

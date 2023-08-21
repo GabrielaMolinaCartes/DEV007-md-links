@@ -1,12 +1,23 @@
 {
   "env": {
-    "node": true
+    "node": true,
+    "jest": true
   },
   "parserOptions": {
     "ecmaVersion": 8
   },
   "extends": ["airbnb-base", "prettier"],
   "rules": {
+    "max-len": ["error", { "code": 80 }],
     "no-console": "off"
+},
+
+"plugins": ["import"],
+
+"overrides": [
+    {
+    "files": ["**/*.spec.js", "**/*.spec.jsx"]
+    }
+  ]
 }
-}
+
