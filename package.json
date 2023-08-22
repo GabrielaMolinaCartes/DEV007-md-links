@@ -1,11 +1,26 @@
 {
-  "name": "md-links",
-  "author": "Gabriela Molina",
+  "name": "gabi-molina-mdlinks",
   "version": "0.1.0",
+  "main": "cli.js",
+  "bin": {
+    "mdlinks": "cli.js"
+  },
+  "keywords": [
+    "node.js",
+    "http",
+    "mdlinks",
+    "project"
+  ],
+  "author": "Gabriela Molina",
+  "license": "ISC",
   "engines": {
     "node": ">=16.x"
   },
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrielaMolinaCartes/DEV007-md-links"
+  },
   "bootcamp": {
     "createdAt": "2023-06-20T14:05:58.211Z",
     "version": "6.3.0",

@@ -35,6 +35,7 @@ MdLinks es una herramienta de línea de comandos desarrollada en Node.js que per
 
 ## 3. Diagrama de flujo
 
+<img src="./src/images/Diagrama de flujo final.png" alt="">
 
 ## 4. Documentación técnica de la librería
 
